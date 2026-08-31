@@ -1,0 +1,74 @@
+<section class="heading-row">
+	<div>
+		<h2>Agent Performance</h2>
+		<p>Handle-time efficiency, service quality, and escalation risk.</p>
+	</div>
+</section>
+
+<section class="kpi-grid">
+	<article class="panel">
+		<p>Top Performer</p>
+		<h3>{{ bestPerformer?.agentName }}</h3>
+	</article>
+	<article class="panel">
+		<p>Avg Resolution</p>
+		<h3>{{ averageResolution }}%</h3>
+	</article>
+	<article class="panel">
+		<p>Total Escalations</p>
+		<h3>{{ totalEscalations }}</h3>
+	</article>
+</section>
+
+<section class="layout">
+	<article class="panel">
+		<div class="table-head">
+			<h3>Agent Roster</h3>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Agent</th>
+					<th>Status</th>
+					<th>Call Volume</th>
+					<th>Avg Handle</th>
+					<th>Resolved %</th>
+					<th>Escalations</th>
+					<th>Calls</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (row of metrics; track row.agentName) {
+					<tr>
+						<td><strong>{{ row.agentName }}</strong></td>
+						<td>
+							<span class="state" [class.heavy]="loadBand(row.callVolume) === 'heavy'">
+								{{ loadBand(row.callVolume) === 'heavy' ? 'Heavy' : 'Steady' }}
+							</span>
+						</td>
+						<td>{{ row.callVolume }}</td>
+						<td>{{ formatSeconds(row.avgHandleTimeSec) }}</td>
+						<td>{{ row.resolvedPct }}%</td>
+						<td>{{ row.escalations }}</td>
+						<td>
+							<a class="link-btn" [routerLink]="['/users', 'agent', row.agentId]">View calls</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</article>
+
+	<article class="panel coach-panel">
+		<h3>Coaching Opportunities</h3>
+		<p>Agents with lower outcomes and elevated escalation indicators.</p>
+		<ul>
+			@for (row of metrics.slice(-2); track row.agentName) {
+				<li>
+					<strong>{{ row.agentName }}</strong>
+					<span>{{ row.resolvedPct }}% resolved · {{ row.escalations }} escalations</span>
+				</li>
+			}
+		</ul>
+	</article>
+</section>

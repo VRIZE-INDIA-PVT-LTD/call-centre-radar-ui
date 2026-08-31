@@ -1,0 +1,101 @@
+<section class="page-heading">
+	<div>
+		<h2>Operational Intelligence</h2>
+		<p>Real-time oversight of critical interactions.</p>
+	</div>
+	<p class="live-dot">Live updates active · {{ liveUpdateRate }}%</p>
+</section>
+
+<section class="kpi-grid">
+	<article class="panel kpi">
+		<p>Total Calls</p>
+		<h3>{{ activeCalls }}</h3>
+	</article>
+	<article class="panel kpi">
+		<p>Avg Handle Time</p>
+		<h3>{{ formatSeconds(avgHandleSec) }}</h3>
+	</article>
+	<article class="panel kpi">
+		<p>Resolution Rate</p>
+		<h3>{{ resolvedRate }}%</h3>
+	</article>
+	<article class="panel kpi">
+		<p>Net Sentiment</p>
+		<h3>{{ netSentiment >= 0 ? '+' : '' }}{{ netSentiment }}</h3>
+	</article>
+</section>
+
+<section class="overview-grid">
+	<article class="panel attention-panel">
+		<div class="panel-heading">
+			<h3>Requires Attention</h3>
+			<a class="link-btn" routerLink="/attention">View all</a>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Customer / Agent</th>
+					<th>Attention Score</th>
+					<th>Issue Tag</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (call of attentionTop; track call.id) {
+					<tr>
+						<td>
+							<strong>{{ call.customerName }}</strong>
+							<p>Agent: {{ call.agentName }}</p>
+						</td>
+						<td>
+							<div class="score-wrap">
+								<div class="score-bar">
+									<div class="fill" [style.width.%]="call.needsAttention" [class.critical]="getAttentionTone(call.needsAttention) === 'critical'" [class.elevated]="getAttentionTone(call.needsAttention) === 'elevated'"></div>
+								</div>
+								<span>{{ call.needsAttention }}/100</span>
+							</div>
+						</td>
+						<td>
+							<span class="issue-pill" [class.critical]="getAttentionTone(call.needsAttention) === 'critical'" [class.elevated]="getAttentionTone(call.needsAttention) === 'elevated'">
+								{{ call.issueTag }}
+							</span>
+						</td>
+						<td>
+							<a class="link-btn" [routerLink]="['/calls', call.id]">Review</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</article>
+
+	<article class="panel trend-panel">
+		<h3>Trending Issues</h3>
+		<ul>
+			@for (issue of trendingIssues; track issue.issueTag; let index = $index) {
+				<li>
+					<div>
+						<p class="rank">#{{ index + 1 }}</p>
+						<h4>{{ issue.issueTag }}</h4>
+					</div>
+					<p class="count">{{ issue.count }} calls</p>
+				</li>
+			}
+		</ul>
+	</article>
+
+	<article class="panel transcript-panel transcript-wide">
+		<h3>Recent Transcripts</h3>
+		<ul>
+			@for (call of recentCalls; track call.id) {
+				<li>
+					<div>
+						<strong>{{ call.id }}</strong>
+						<p>{{ call.transcript[0]?.text }}</p>
+					</div>
+					<a [routerLink]="['/calls', call.id]">Open</a>
+				</li>
+			}
+		</ul>
+	</article>
+</section>

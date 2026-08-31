@@ -1,0 +1,40 @@
+<section class="page-heading">
+  <div>
+    <h2>Upload Call Package</h2>
+    <p>Attach one MP3 call recording and one metadata JSON file.</p>
+  </div>
+</section>
+
+<section class="panel upload-panel">
+  <div class="fields-grid">
+    <label class="field">
+      <span>Audio File (MP3)</span>
+      <input type="file" accept=".mp3,audio/mpeg" (change)="onAudioFileChange($event)" />
+      @if (audioFile) {
+        <small>Selected: {{ audioFile.name }}</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Metadata File (JSON)</span>
+      <input type="file" accept=".json,application/json" (change)="onMetadataFileChange($event)" />
+      @if (metadataFile) {
+        <small>Selected: {{ metadataFile.name }}</small>
+      }
+    </label>
+  </div>
+
+  @if (errorMessage) {
+    <p class="status error">{{ errorMessage }}</p>
+  }
+
+  @if (successMessage) {
+    <p class="status success">{{ successMessage }}</p>
+  }
+
+  <div class="actions">
+    <button type="button" (click)="submitUpload()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Submitting...' : 'Submit Upload' }}
+    </button>
+  </div>
+</section>

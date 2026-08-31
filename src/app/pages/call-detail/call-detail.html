@@ -1,0 +1,111 @@
+@if (call) {
+	<section class="review-layout">
+		<div class="left-column">
+			<div class="review-title">
+				<h2>Call {{ call.id }}</h2>
+				<div class="title-party-row">
+					<span class="party-chip agent-chip">Agent: <strong>{{ call.agentName }}</strong></span>
+					<span class="party-chip customer-chip">Customer: <strong>{{ call.customerName }}</strong></span>
+				</div>
+				<div class="status-row">
+					<span class="pill" [class.ok]="call.resolved" [class.bad]="!call.resolved">
+						@if (call.resolved) {
+							<span class="status-icon" aria-hidden="true">&#10003;</span>
+						} @else {
+							<span class="status-icon" aria-hidden="true">&#10007;</span>
+						}
+						{{ call.resolved ? 'Resolved' : 'Unresolved' }}
+					</span>
+					@if (managerAttentionNeeded) {
+						<span class="pill bad">
+							<span class="status-icon attention-icon" aria-hidden="true">!</span>
+							Manager attention needed
+						</span>
+					}
+				</div>
+			</div>
+
+			<article class="panel player-panel">
+				<div class="player-head">
+					<h3>Audio Playback</h3>
+					<p>{{ formatClock(call.durationSec / 2) }} / {{ formatClock(call.durationSec) }}</p>
+				</div>
+				<div class="waveform">
+					@for (bar of waveformBars; track $index) {
+						<span [style.height.px]="bar"></span>
+					}
+				</div>
+				<audio controls preload="none" [src]="call.audioUrl" class="player"></audio>
+			</article>
+
+			<article class="panel">
+				<div class="transcript-head">
+					<h3>Interactive Transcript</h3>
+					<div>
+						<span>{{ call.agentName }} (Agent)</span>
+						<span>{{ call.customerName }} (Customer)</span>
+					</div>
+				</div>
+				<div class="transcript-list">
+					@for (turn of call.transcript; track $index) {
+						<article class="turn" [ngClass]="turn.speaker">
+							<p class="meta">{{ turn.speaker === 'agent' ? call.agentName : call.customerName }} ({{ turn.speaker }}) · {{ formatClock(turn.startSec) }} - {{ formatClock(turn.endSec) }}</p>
+							<p>{{ turn.text }}</p>
+						</article>
+					}
+				</div>
+			</article>
+		</div>
+
+		<div class="right-column">
+			<article class="panel intel-panel">
+				<h3>AI Intelligence</h3>
+
+				<div class="chunk">
+					<p class="label">Primary intent</p>
+					<p>{{ call.intent }}</p>
+					<small>Quote: "{{ call.evidence.intent.quote }}"</small>
+				</div>
+
+				<div class="chunk">
+					<p class="label">Outcome evidence</p>
+					<p>{{ call.evidence.outcome.rationale }}</p>
+					<small>Quote: "{{ call.evidence.outcome.quote }}"</small>
+				</div>
+
+				<div class="chunk">
+					<p class="label">Auto-summary</p>
+					<p>{{ call.summary }}</p>
+				</div>
+
+				<div class="chunk">
+					<p class="label">Mood timeline</p>
+					<div class="mood-track">
+						@for (point of call.moodTimeline; track $index) {
+							<div class="point" [style.left.%]="point.minute * 10" [style.bottom.%]="point.mood" [style.background]="getMoodColor(point.mood)"></div>
+						}
+					</div>
+					<small>{{ call.moodBefore }} to {{ call.moodAfter }}</small>
+				</div>
+			</article>
+
+			<article class="panel customer-panel">
+				<h3>{{ call.customerName }}</h3>
+				<p class="meta-row">Since {{ call.startedAt | date: 'y' }} · Previous calls: {{ customerPriorCalls }}</p>
+				<div class="metric-row">
+					<span>90-day sentiment</span>
+					<strong>{{ call.moodAfter }}</strong>
+				</div>
+				<div class="metric-row">
+					<span>Improving</span>
+					<strong>{{ customerSatisfaction }}/5</strong>
+				</div>
+				<a class="link-btn" [routerLink]="['/customers', call.customerId]">Open customer profile</a>
+			</article>
+		</div>
+	</section>
+} @else {
+	<section class="panel">
+		<p>Call not found.</p>
+	</section>
+}

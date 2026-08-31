@@ -1,0 +1,44 @@
+@if (user && userType) {
+	<section class="customer-head panel">
+		<div class="identity">
+			<div class="avatar">{{ user.name.charAt(0) }}</div>
+			<div>
+				<h2>{{ user.name }}</h2>
+				<p>
+					@if (userType === 'agent') {
+						Handled calls and service outcomes timeline.
+					} @else {
+						Call history and service quality timeline.
+					}
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="history-grid">
+		@for (call of calls; track call.id) {
+			<article class="panel call-card">
+				<div class="call-top">
+					<div>
+						<h3>{{ call.id }}</h3>
+						<p>{{ formatDate(call.startedAt) }} · {{ counterpartLabel(call.agentName, call.customerName) }}</p>
+					</div>
+					<span class="pill" [class.ok]="call.resolved" [class.bad]="!call.resolved">
+						{{ call.resolved ? 'Resolved' : 'Pending' }}
+					</span>
+				</div>
+				<p><strong>Intent:</strong> {{ call.intent }}</p>
+				<p><strong>Summary:</strong> {{ call.summary }}</p>
+				<div class="meta">
+					<span>Attention {{ call.needsAttention }}</span>
+					<span>{{ call.issueTag }}</span>
+				</div>
+				<a class="link-btn" [routerLink]="['/calls', call.id]">Open call review</a>
+			</article>
+		}
+	</section>
+} @else {
+	<section class="panel">
+		<p>User not found.</p>
+	</section>
+}

@@ -1,0 +1,41 @@
+<section class="heading-row">
+	<div>
+		<h2>Customer Directory</h2>
+		<p>Browse customer records, issue context, and recent touchpoints.</p>
+	</div>
+	<span>{{ rows.length }} total profiles</span>
+</section>
+
+<section class="panel">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Customer</th>
+				<th>Calls</th>
+				<th>Open Issues</th>
+				<th>Last Contact</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (row of rows; track row.id) {
+				<tr>
+					<td>
+						<strong>{{ row.name }}</strong>
+						<p>{{ row.latestCall?.issueTag ?? 'No known issues' }}</p>
+					</td>
+					<td>{{ row.calls.length }}</td>
+					<td>
+						<span class="pill" [class.bad]="row.unresolved > 0" [class.ok]="row.unresolved === 0">
+							{{ row.unresolved }} open
+						</span>
+					</td>
+					<td>{{ row.latestCall ? formatDate(row.latestCall.startedAt) : 'No calls' }}</td>
+					<td>
+						<a class="link-btn" [routerLink]="['/users', 'customer', row.id]">View calls</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</section>

@@ -1,0 +1,69 @@
+<section class="heading-row">
+	<div>
+		<h2>Manager's Attention Queue</h2>
+		<p>Prioritized critical conversations requiring intervention.</p>
+	</div>
+	<div class="meta-strip">
+		<span>{{ highPriority }} high priority</span>
+		<span>{{ escalations }} unresolved</span>
+	</div>
+</section>
+
+<section class="queue-layout">
+	<article class="panel">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Customer / Agent</th>
+					<th>Attention Score</th>
+					<th>Issue Tag</th>
+					<th>Status</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (call of queue; track call.id) {
+					<tr>
+						<td>
+							<strong>{{ call.customerName }}</strong>
+							<p>Agent: {{ call.agentName }}</p>
+						</td>
+						<td>
+							<div class="score-cell">
+								<div class="track">
+									<div class="fill" [style.width.%]="call.needsAttention" [class.critical]="scoreBand(call.needsAttention) === 'critical'" [class.elevated]="scoreBand(call.needsAttention) === 'elevated'"></div>
+								</div>
+								<span>{{ call.needsAttention }}/100</span>
+							</div>
+						</td>
+						<td>
+							<span class="tag" [class.critical]="scoreBand(call.needsAttention) === 'critical'" [class.elevated]="scoreBand(call.needsAttention) === 'elevated'">
+								{{ call.issueTag }}
+							</span>
+						</td>
+						<td>
+							<span class="pill" [class.ok]="call.resolved" [class.bad]="!call.resolved">
+								{{ call.resolved ? 'Resolved' : 'Escalated' }}
+							</span>
+						</td>
+						<td>
+							<a class="link-btn" [routerLink]="['/calls', call.id]">Intervene</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</article>
+
+	<article class="panel side-insights">
+		<h3>Escalation Lens</h3>
+		<ul>
+			@for (call of queue.slice(0, 4); track call.id) {
+				<li>
+					<p>{{ call.customerName }}</p>
+					<small>{{ call.summary }}</small>
+				</li>
+			}
+		</ul>
+	</article>
+</section>

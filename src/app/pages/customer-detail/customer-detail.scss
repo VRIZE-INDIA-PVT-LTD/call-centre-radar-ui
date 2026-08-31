@@ -1,0 +1,82 @@
+.customer-head {
+	display: grid;
+	gap: 0.8rem;
+	margin-bottom: 0.85rem;
+}
+
+.identity {
+	align-items: center;
+	display: flex;
+	gap: 0.8rem;
+}
+
+.avatar {
+	align-items: center;
+	background: linear-gradient(140deg, #66eebc, #61d8c3);
+	border-radius: 0.7rem;
+	color: #123645;
+	display: grid;
+	font-family: var(--font-display);
+	font-size: 1.2rem;
+	font-weight: 700;
+	height: 3rem;
+	place-items: center;
+	width: 3rem;
+}
+
+h2 {
+	font-family: var(--font-display);
+	margin: 0;
+}
+
+.identity p {
+	color: var(--text-soft);
+	margin: 0.2rem 0 0;
+}
+
+.history-grid {
+	display: grid;
+	gap: 0.85rem;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.call-card {
+	padding: 0.9rem;
+}
+
+.call-card p {
+	margin: 0.45rem 0;
+}
+
+.call-top {
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: space-between;
+}
+
+h3 {
+	font-family: var(--font-display);
+	margin: 0;
+}
+
+.call-top p {
+	color: var(--text-soft);
+	font-size: 0.79rem;
+	margin: 0.14rem 0 0;
+}
+
+.meta {
+	display: flex;
+	gap: 0.45rem;
+	margin: 0.6rem 0;
+}
+
+.meta span {
+	background: #ecf1f8;
+	border-radius: 0.35rem;
+	color: #54657c;
+	font-size: 0.73rem;
+	font-weight: 700;
+	padding: 0.16rem 0.38rem;
+}
