@@ -45,7 +45,20 @@ export class Upload {
       return;
     }
 
+    if (this.metadataFile && this.getBaseName(selectedFile.name) !== this.getBaseName(this.metadataFile.name)) {
+      this.audioFile = null;
+      this.errorMessage = 'Audio and metadata file names must match (excluding extension).';
+      input.value = '';
+      return;
+    }
+
     this.audioFile = selectedFile;
+  }
+
+  private getBaseName(fileName: string): string {
+    const lastDotIndex = fileName.lastIndexOf('.');
+    const base = lastDotIndex > 0 ? fileName.slice(0, lastDotIndex) : fileName;
+    return base.toLowerCase();
   }
 
   async onMetadataFileChange(event: Event): Promise<void> {
@@ -68,6 +81,13 @@ export class Upload {
     if (!isJsonByName && !isJsonByType) {
       this.metadataFile = null;
       this.errorMessage = 'Please select a valid JSON metadata file.';
+      input.value = '';
+      return;
+    }
+
+    if (this.audioFile && this.getBaseName(selectedFile.name) !== this.getBaseName(this.audioFile.name)) {
+      this.metadataFile = null;
+      this.errorMessage = 'Audio and metadata file names must match (excluding extension).';
       input.value = '';
       return;
     }
@@ -103,6 +123,11 @@ export class Upload {
 
     if (!this.metadataFile || !this.metadataText) {
       this.errorMessage = 'Select a metadata JSON file before submitting.';
+      return;
+    }
+
+    if (this.getBaseName(this.audioFile.name) !== this.getBaseName(this.metadataFile.name)) {
+      this.errorMessage = 'Audio and metadata file names must match (excluding extension).';
       return;
     }
 

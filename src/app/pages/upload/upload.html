@@ -10,9 +10,6 @@
     <label class="field">
       <span>Audio File (MP3)</span>
       <input type="file" accept=".mp3,audio/mpeg" (change)="onAudioFileChange($event)" />
-      @if (audioFile) {
-        <small>Selected: {{ audioFile.name }}</small>
-      }
     </label>
 
     <label class="field">
