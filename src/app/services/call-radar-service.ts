@@ -19,8 +19,9 @@ export interface UploadCallResponse {
 })
 export class CallRadarService {
 	private readonly http = inject(HttpClient);
-	private readonly endpoint = '/api/call-radar';
-	private readonly uploadEndpoint = '/api/call-radar/upload';
+  private readonly apiBaseUrl = 'http://127.0.0.1:8000/api';
+  private readonly endpoint = 'http://127.0.0.1:8000/api/bundle';
+  private readonly uploadEndpoint = 'http://127.0.0.1:8000/api/process';
 
 	private snapshot: CallRadarDataResponse = {
 		agents: AGENTS,
@@ -44,6 +45,14 @@ export class CallRadarService {
 	getSnapshot(): CallRadarDataResponse {
 		return this.snapshot;
 	}
+
+  getCallAudioUrl(callId: string): string {
+    return `${this.apiBaseUrl}/calls/${encodeURIComponent(callId)}/audio`;
+  }
+
+  getCallAudioData(callId: string): Observable<ArrayBuffer> {
+    return this.http.get(this.getCallAudioUrl(callId), { responseType: 'arraybuffer' });
+  }
 
 	uploadCallPackage(audioFile: File, metadata: Record<string, unknown>): Observable<CallRecord> {
 		const formData = new FormData();

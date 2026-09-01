@@ -27,18 +27,29 @@
 
 			<article class="panel player-panel">
 				<div class="player-head">
-					<h3>Audio Playback</h3>
-					<p>{{ formatClock(call.durationSec / 2) }} / {{ formatClock(call.durationSec) }}</p>
+          <h3>Audio Playback</h3>
 				</div>
-				<div class="waveform">
-					@for (bar of waveformBars; track $index) {
-						<span [style.height.px]="bar"></span>
+        <div class="waveform" [class.is-ready]="playbackDuration() > 0">
+          @for (bar of waveformBars(); track $index) {
+          <span [class.played]="$index / waveformBars().length < playbackProgress()" [style.height.px]="bar"></span>
 					}
+          <input class="waveform-seek" type="range" min="0" [max]="playbackDuration()" step="0.1" [value]="currentTime()"
+            [disabled]="playbackDuration() === 0" (input)="seekTo($event, audioPlayer)"
+            [attr.aria-label]="'Seek audio, ' + formatClock(currentTime()) + ' of ' + formatClock(playbackDuration())" />
 				</div>
-				<audio controls preload="none" [src]="call.audioUrl" class="player"></audio>
+        <div class="player-controls">
+          <button class="play-button" type="button" (click)="togglePlayback(audioPlayer)"
+            [attr.aria-label]="isPlaying() ? 'Pause audio' : 'Play audio'">
+            <span [class.pause-icon]="isPlaying()" [class.play-icon]="!isPlaying()" aria-hidden="true"></span>
+          </button>
+          <p>{{ formatClock(currentTime()) }} / {{ formatClock(playbackDuration()) }}</p>
+        </div>
+        <audio #audioPlayer preload="metadata" [src]="audioSource" (timeupdate)="updatePlayback(audioPlayer)"
+          (loadedmetadata)="updatePlayback(audioPlayer)" (play)="isPlaying.set(true)" (pause)="isPlaying.set(false)"
+          (ended)="isPlaying.set(false)"></audio>
 			</article>
 
-			<article class="panel">
+      <article class="panel transcript-panel">
 				<div class="transcript-head">
 					<h3>Interactive Transcript</h3>
 					<div>
@@ -47,7 +58,7 @@
 					</div>
 				</div>
 				<div class="transcript-list">
-					@for (turn of call.transcript; track $index) {
+          @for (turn of displayedTranscript(); track $index) {
 						<article class="turn" [ngClass]="turn.speaker">
 							<p class="meta">{{ turn.speaker === 'agent' ? call.agentName : call.customerName }} ({{ turn.speaker }}) · {{ formatClock(turn.startSec) }} - {{ formatClock(turn.endSec) }}</p>
 							<p>{{ turn.text }}</p>

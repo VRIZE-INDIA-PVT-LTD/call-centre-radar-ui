@@ -11,6 +11,20 @@
 	gap: 0.85rem;
 }
 
+.left-column {
+  align-content: start;
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.right-column {
+  align-content: start;
+}
+
+.transcript-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 .review-title {
 	display: grid;
 	gap: 0.4rem;
@@ -91,13 +105,6 @@ h3 {
 	margin-bottom: 0.45rem;
 }
 
-.player-head p {
-	color: var(--text-soft);
-	font-size: 0.77rem;
-	font-weight: 700;
-	margin: 0;
-}
-
 .waveform {
 	align-items: flex-end;
 	background: linear-gradient(180deg, #f4f7fd 0%, #f1f5fb 100%);
@@ -107,22 +114,96 @@ h3 {
 	gap: 0.28rem;
 	height: 5rem;
 	padding: 0.5rem;
+  position: relative;
 }
 
 .waveform span {
 	background: #8392a7;
 	border-radius: 0.25rem;
-	width: 0.24rem;
+  flex: 1 1 0;
+    min-width: 1px;
+    transition: background-color 120ms ease;
 }
 
-.player {
+.waveform span.played {
+  background: #2374c6;
+}
+
+.waveform-seek {
+  bottom: 0.5rem;
+  cursor: pointer;
+  height: calc(100% - 1rem);
+  left: 0.5rem;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0.5rem;
+  width: calc(100% - 1rem);
+}
+
+.waveform:focus-within {
+  border-color: #2374c6;
+  box-shadow: 0 0 0 3px rgba(35, 116, 198, 0.18);
+}
+
+.waveform-seek:disabled {
+  cursor: default;
+}
+
+.player-controls {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
 	margin-top: 0.65rem;
-	width: 100%;
+}
+
+.player-controls p {
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  margin: 0;
+}
+
+.play-button {
+  align-items: center;
+  background: #1d2a3c;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.play-button:focus-visible {
+  outline: 3px solid rgba(35, 116, 198, 0.35);
+  outline-offset: 2px;
+}
+
+.play-icon {
+  border-bottom: 0.34rem solid transparent;
+  border-left: 0.55rem solid #fff;
+  border-top: 0.34rem solid transparent;
+  margin-left: 0.12rem;
+}
+
+.pause-icon {
+  border-left: 0.2rem solid #fff;
+  border-right: 0.2rem solid #fff;
+  height: 0.75rem;
+  width: 0.55rem;
+}
+
+.player-panel audio {
+  display: none;
 }
 
 .transcript-head {
 	align-items: center;
 	display: flex;
+  flex: none;
 	justify-content: space-between;
 	margin-bottom: 0.6rem;
 }
@@ -142,8 +223,11 @@ h3 {
 }
 
 .transcript-list {
+  align-content: start;
 	display: grid;
 	gap: 0.55rem;
+  min-height: 0;
+    overflow-y: auto;
 }
 
 .turn {

@@ -27,7 +27,7 @@
 					<td>{{ row.calls.length }}</td>
 					<td>
 						<span class="pill" [class.bad]="row.unresolved > 0" [class.ok]="row.unresolved === 0">
-							{{ row.unresolved }} open
+              {{ row.unresolved === 0 ? 'None' : row.unresolved + ' open' }}
 						</span>
 					</td>
 					<td>{{ row.latestCall ? formatDate(row.latestCall.startedAt) : 'No calls' }}</td>
